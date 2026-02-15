@@ -25,11 +25,11 @@ jobs:
     - name: Set Version
       run: mvn versions:set -DnewVersion=${{ github.event.inputs.version }} -DgenerateBackupPoms=false
 
-    - name: Build with Maven
-      run: mvn clean package
+    - name: Build and Lint
+      run: mvn clean package checkstyle:check spotless:check
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
         name: clearlag-core-${{ github.event.inputs.version }}
-        path: Core/target/clearlag-core-${{ github.event.inputs.version }}.jar
+        path: target/clearlag-core-${{ github.event.inputs.version }}.jar
