@@ -197,7 +197,7 @@ public class ConfigHandler {
           if (ob == null) {
             Object tp = field.get(object);
 
-            if (tp != null) ob = tp.getClass().newInstance();
+            if (tp != null) ob = tp.getClass().getDeclaredConstructor().newInstance();
           }
 
           field.set(
