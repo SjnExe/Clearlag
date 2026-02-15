@@ -31,5 +31,5 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: clearlag-core-${{ github.event.inputs.version }}
-        path: target/clearlag-core-${{ github.event.inputs.version }}.jar
+        name: Clearlag-${{ github.event.inputs.version }}
+        path: target/Clearlag-${{ github.event.inputs.version }}.jar
