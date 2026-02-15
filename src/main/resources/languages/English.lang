@@ -211,3 +211,8 @@ command.performance.usage()=[tick-rate]
 command.performance.desc()=(View Server Performance)
 command.performance.message()=&3Started thread sampling (More &1sleep&3 is better!)
 command.performance.invalidinteger({arg})=&4Invalid poll-rate specified&8: &c{arg}
+
+##]-> /lagg debug
+command.debug.name()=debug
+command.debug.usage()=[on/off]
+command.debug.desc()=(Toggles debug mode on/off)
