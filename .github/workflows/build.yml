@@ -1,0 +1,35 @@
+name: Build Plugin
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version (e.g., 3.3.0)'
+        required: true
+        default: '3.3.0-SNAPSHOT'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: 'maven'
+
+    - name: Set Version
+      run: mvn versions:set -DnewVersion=${{ github.event.inputs.version }} -DgenerateBackupPoms=false
+
+    - name: Build and Lint
+      run: mvn clean package checkstyle:check spotless:check
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: clearlag-core-${{ github.event.inputs.version }}
+        path: target/clearlag-core-${{ github.event.inputs.version }}.jar

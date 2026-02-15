@@ -1,8 +1,8 @@
 # Eclipse
-/.classpath
-/.project
-/.settings
-/*.jardesc
+.classpath
+.project
+.settings/
+*.jardesc
 
 # IntelliJ
 *.iml
@@ -11,27 +11,24 @@
 .idea/
 
 # NetBeans
-/nbproject
+nbproject/
 
 # vim
 .*.sw[a-p]
 
 # Maven
-/build.xml
-/target
-/dependency-reduced-pom.xml
+/target/
+dependency-reduced-pom.xml
+**/dependency-reduced-pom.xml
 
 # various other potential build files
-/build
-/bin
-/dist
-/manifest.mf
-/lib
-**/target/**
+build/
+bin/
+dist/
+manifest.mf
+lib/
 *.jar
 
-# Mac Filesystem Dust
+# OS
 .DS_Store
-
-# Windows Filesystem Dust
 Thumbs.db
