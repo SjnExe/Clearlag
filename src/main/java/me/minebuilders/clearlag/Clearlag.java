@@ -78,6 +78,7 @@ public class Clearlag extends JavaPlugin {
           new HaltCmd(),
           new AdminCmd(),
           new ProfileCmd(),
+          new DebugCmd(),
           new CheckChunkCmd(),
           new SampleMemoryCmd(),
           new TickSamplerCmd(),
@@ -123,9 +124,7 @@ public class Clearlag extends JavaPlugin {
 
     startModules();
 
-    if (getConfig().getBoolean("settings.auto-update")) {
-      new BukkitUpdater(getFile());
-    }
+    Util.setDebugMode(getConfig().getBoolean("settings.debug-mode", false));
 
     Util.log("Clearlag is now enabled!");
   }
@@ -140,11 +139,12 @@ public class Clearlag extends JavaPlugin {
 
       try {
 
-        final VersionAdapter tryingVersionAdapter = versionAdapterType.newInstance();
+        final VersionAdapter tryingVersionAdapter = versionAdapterType.getDeclaredConstructor().newInstance();
 
         if (tryingVersionAdapter.isCompatible()) return tryingVersionAdapter;
 
-      } catch (Throwable ignored) {
+      } catch (Throwable t) {
+        Util.debug(t);
       }
     }
 

@@ -12,12 +12,34 @@ public class Util {
 
   private static final Logger log = Logger.getLogger("Minecraft");
 
+  private static boolean debugMode = false;
+
+  public static void setDebugMode(boolean debug) {
+    debugMode = debug;
+  }
+
+  public static boolean isDebugMode() {
+    return debugMode;
+  }
+
   public static void log(String m) {
     log.info("[ClearLag] " + m);
   }
 
   public static void warning(String m) {
     log.warning("[ClearLag] " + m);
+  }
+
+  public static void debug(String m) {
+    if (debugMode) {
+      log.info("[ClearLag DEBUG] " + m);
+    }
+  }
+
+  public static void debug(Throwable t) {
+    if (debugMode) {
+      t.printStackTrace();
+    }
   }
 
   public static void msg(String m, CommandSender s) {
