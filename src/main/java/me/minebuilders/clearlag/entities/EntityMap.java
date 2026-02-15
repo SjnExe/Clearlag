@@ -12,7 +12,8 @@ import org.bukkit.entity.EntityType;
  */
 public class EntityMap<T> {
 
-  private final Node<T>[] entityTable = new Node[EntityType.values().length + 1];
+  @SuppressWarnings("unchecked")
+  private final Node<T>[] entityTable = (Node<T>[]) new Node[EntityType.values().length + 1];
 
   public boolean containsEntity(Entity entity) {
 
@@ -20,7 +21,11 @@ public class EntityMap<T> {
 
     if (node != null) {
 
-      for (EntityAttribute<Entity> e : node.attributes) if (!e.containsData(entity)) return false;
+      for (EntityAttribute<Entity> e : node.attributes) {
+        if (!e.containsData(entity)) {
+          return false;
+        }
+      }
 
       return true;
     }
@@ -34,7 +39,11 @@ public class EntityMap<T> {
 
     if (node != null) {
 
-      for (EntityAttribute<Entity> e : node.attributes) if (!e.containsData(entity)) return null;
+      for (EntityAttribute<Entity> e : node.attributes) {
+        if (!e.containsData(entity)) {
+          return null;
+        }
+      }
 
       return node.value;
     }

@@ -4,12 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 import me.minebuilders.clearlag.Util;
-import me.minebuilders.clearlag.entities.attributes.*;
+import me.minebuilders.clearlag.entities.attributes.EntityAttribute;
+import me.minebuilders.clearlag.entities.attributes.EntityHasMetaAttribute;
+import me.minebuilders.clearlag.entities.attributes.EntityHasNameAttribute;
+import me.minebuilders.clearlag.entities.attributes.EntityLifeLimitAttribute;
+import me.minebuilders.clearlag.entities.attributes.EntityMaterialAttribute;
+import me.minebuilders.clearlag.entities.attributes.EntityMountedAttribute;
+import me.minebuilders.clearlag.entities.attributes.EntityNameAttribute;
+import me.minebuilders.clearlag.entities.attributes.EntityOnGroundAttribute;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
 /**
+ * Attribute parser.
+ *
  * @author bob7l
  */
 public class AttributeParser {
@@ -26,7 +35,9 @@ public class AttributeParser {
 
       boolean reversed = (tok.startsWith("!"));
 
-      if (reversed) tok = tok.substring(1);
+      if (reversed) {
+        tok = tok.substring(1);
+      }
 
       if (tok.startsWith("name=\"") || tok.startsWith("hasMeta=\"")) {
 
@@ -45,15 +56,21 @@ public class AttributeParser {
           name.append(" ").append(tok);
         }
 
-        if (tok.startsWith("name=\"")) attribute = new EntityNameAttribute(name.toString());
-        else attribute = new EntityHasMetaAttribute(name.toString());
+        if (tok.startsWith("name=\"")) {
+          attribute = new EntityNameAttribute(name.toString());
+        } else {
+          attribute = new EntityHasMetaAttribute(name.toString());
+        }
 
-      } else if (tok.startsWith("hasName")) attribute = new EntityHasNameAttribute();
-      else if (tok.startsWith("liveTime="))
+      } else if (tok.startsWith("hasName")) {
+        attribute = new EntityHasNameAttribute();
+      } else if (tok.startsWith("liveTime=")) {
         attribute = new EntityLifeLimitAttribute(Integer.parseInt(tok.substring(9)));
-      else if (tok.startsWith("isMounted")) attribute = new EntityMountedAttribute();
-      else if (tok.startsWith("onGround")) attribute = new EntityOnGroundAttribute();
-      else if (tok.startsWith("id=") || tok.startsWith("material=")) {
+      } else if (tok.startsWith("isMounted")) {
+        attribute = new EntityMountedAttribute();
+      } else if (tok.startsWith("onGround")) {
+        attribute = new EntityOnGroundAttribute();
+      } else if (tok.startsWith("id=") || tok.startsWith("material=")) {
 
         if (t == EntityType.ITEM) {
 
@@ -72,7 +89,9 @@ public class AttributeParser {
           } else {
             mat = Material.getMaterial(input);
 
-            if (mat == null) mat = Material.matchMaterial(input);
+            if (mat == null) {
+              mat = Material.matchMaterial(input);
+            }
           }
 
           attribute = new EntityMaterialAttribute(mat);
@@ -82,7 +101,9 @@ public class AttributeParser {
       if (attribute != null) {
         attribute.setReversed(reversed);
         result.attributes.add(attribute);
-      } else result.nonApplicables.add(tok);
+      } else {
+        result.nonApplicables.add(tok);
+      }
     }
 
     return result;

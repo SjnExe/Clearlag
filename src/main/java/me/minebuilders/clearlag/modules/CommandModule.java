@@ -10,6 +10,7 @@ import me.minebuilders.clearlag.language.messages.Message;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+/** Command module. */
 public abstract class CommandModule extends ClearlagModule {
 
   @LanguageValue(key = "command.error.wrongUsage")
@@ -35,16 +36,23 @@ public abstract class CommandModule extends ClearlagModule {
 
   public void processCmd(CommandSender sender, String[] arg) throws WrongCommandArgumentException {
 
-    if (!sender.hasPermission("lagg." + name))
+    if (!sender.hasPermission("lagg." + name)) {
       throw new WrongCommandArgumentException(noPermission, displayName);
+    }
 
-    if (argLength >= arg.length)
+    if (argLength >= arg.length) {
       throw new WrongCommandArgumentException(wrongUsage, usage, displayName);
+    }
 
-    if (arg.length >= 1) arg = Arrays.copyOfRange(arg, 1, arg.length);
+    if (arg.length >= 1) {
+      arg = Arrays.copyOfRange(arg, 1, arg.length);
+    }
 
-    if (sender instanceof Player) run((Player) sender, arg);
-    else run(sender, arg);
+    if (sender instanceof Player) {
+      run((Player) sender, arg);
+    } else {
+      run(sender, arg);
+    }
   }
 
   protected void run(Player player, String[] args) throws WrongCommandArgumentException {
@@ -64,7 +72,9 @@ public abstract class CommandModule extends ClearlagModule {
       displayName = languageManager.getMessage("command." + name + ".name").getRawStringMessage();
       desc = languageManager.getMessage("command." + name + ".desc").getRawStringMessage();
       usage = languageManager.getMessage("command." + name + ".usage").getRawStringMessage();
-    } else displayName = name;
+    } else {
+      displayName = name;
+    }
 
     commandListener.addCmd(this);
   }

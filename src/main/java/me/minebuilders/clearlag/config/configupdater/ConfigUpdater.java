@@ -1,10 +1,26 @@
 package me.minebuilders.clearlag.config.configupdater;
 
-import java.io.*;
-import java.util.*;
-import me.minebuilders.clearlag.config.configupdater.entries.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Set;
+import java.util.Stack;
+import me.minebuilders.clearlag.config.configupdater.entries.ConfigBasicEntry;
+import me.minebuilders.clearlag.config.configupdater.entries.ConfigCommentEntry;
+import me.minebuilders.clearlag.config.configupdater.entries.ConfigEntry;
+import me.minebuilders.clearlag.config.configupdater.entries.ConfigListEntry;
+import me.minebuilders.clearlag.config.configupdater.entries.TreeConfigEntry;
 
 /**
+ * Update config.
+ *
  * @author bob7l
  */
 public class ConfigUpdater {
@@ -77,7 +93,9 @@ public class ConfigUpdater {
 
     try (final BufferedWriter bw = new BufferedWriter(new FileWriter(writeToFile))) {
 
-      for (ConfigEntry updatingToEntry : updatingToConfig) updatingToEntry.write(bw, 0);
+      for (ConfigEntry updatingToEntry : updatingToConfig) {
+        updatingToEntry.write(bw, 0);
+      }
     }
 
     return (updatingToConfig.size() - mergedVariables);
@@ -100,13 +118,17 @@ public class ConfigUpdater {
     do {
       final int position = getPosition(line);
 
-      while (!treeStack.isEmpty() && treeStack.peek().position >= position) treeStack.pop();
+      while (!treeStack.isEmpty() && treeStack.peek().position >= position) {
+        treeStack.pop();
+      }
 
       final String trimmedLine = line.substring(position); // Remove leading white spaces.
 
       if (trimmedLine.startsWith("-")) {
 
-        if (currentListEntry != null) currentListEntry.add(trimmedLine);
+        if (currentListEntry != null) {
+          currentListEntry.add(trimmedLine);
+        }
 
       } else {
 
@@ -145,8 +167,11 @@ public class ConfigUpdater {
         }
 
         // Are we currently in a tree? If not, add the new value/tree directly
-        if (currentTree != null) currentTree.treeConfigEntry.addConfigEntry(configEntry);
-        else configEntryList.add(configEntry);
+        if (currentTree != null) {
+          currentTree.treeConfigEntry.addConfigEntry(configEntry);
+        } else {
+          configEntryList.add(configEntry);
+        }
       }
 
       line = nextLine;
@@ -158,7 +183,9 @@ public class ConfigUpdater {
 
   private boolean isComment(String str) {
 
-    if (str.isEmpty() || str.startsWith("#")) return true;
+    if (str.isEmpty() || str.startsWith("#")) {
+      return true;
+    }
 
     final String noSpaceStr = str.replace(" ", "");
 
@@ -180,7 +207,11 @@ public class ConfigUpdater {
   private int getPosition(String str) {
     int i = 0;
 
-    for (; i < str.length(); ++i) if (str.charAt(i) != ' ') break;
+    for (; i < str.length(); ++i) {
+      if (str.charAt(i) != ' ') {
+        break;
+      }
+    }
 
     return i;
   }

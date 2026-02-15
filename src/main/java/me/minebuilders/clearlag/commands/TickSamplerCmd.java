@@ -15,6 +15,7 @@ import me.minebuilders.clearlag.modules.CommandModule;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
 
+/** Tick sampler command. */
 public class TickSamplerCmd extends CommandModule {
 
   @LanguageValue(key = "command.sampleticks.")
@@ -32,14 +33,16 @@ public class TickSamplerCmd extends CommandModule {
     if (args.length > 0 && Util.isInteger(args[0])) {
       sampleTickCycles = Integer.parseInt(args[0]);
 
-      if (sampleTickCycles <= 0) sampleTickCycles = 1;
+      if (sampleTickCycles <= 0) {
+        sampleTickCycles = 1;
+      }
     }
 
     final Thread serverThread = Thread.currentThread();
 
     final Callback<Collection<Integer>> callback;
 
-    if (args.length > 1 && args[1].equalsIgnoreCase("raw"))
+    if (args.length > 1 && args[1].equalsIgnoreCase("raw")) {
       callback =
           (sample) -> {
             lang.sendMessage("rawheader", sender);
@@ -51,7 +54,7 @@ public class TickSamplerCmd extends CommandModule {
                   sender, (Util.getChatColorByNumberLength(time, 40, 50).toString() + time));
             }
           };
-    else
+    } else {
       callback =
           (samples) -> {
             final IntSummaryStatistics stats =
@@ -59,7 +62,11 @@ public class TickSamplerCmd extends CommandModule {
 
             int spikes = 0;
 
-            for (int sample : samples) if (sample > 50) ++spikes;
+            for (int sample : samples) {
+              if (sample > 50) {
+                ++spikes;
+              }
+            }
 
             lang.sendMessage(
                 "print",
@@ -73,6 +80,7 @@ public class TickSamplerCmd extends CommandModule {
                     + Math.round(stats.getAverage())),
                 (Util.getChatColorByNumberLength(spikes, 1, 2).toString() + spikes));
           };
+    }
 
     new TimingThread(serverThread, callback, sampleTickCycles).start();
 

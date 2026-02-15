@@ -18,9 +18,14 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.Hopper;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Creature;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.Monster;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+/** Check command module. */
 public class CheckCmd extends CommandModule {
 
   @AutoWire private TPSTask tpsTask;
@@ -41,8 +46,9 @@ public class CheckCmd extends CommandModule {
 
         World world = Bukkit.getWorld(arg);
 
-        if (world == null)
+        if (world == null) {
           throw new WrongCommandArgumentException(lang.getMessage("invalidworld"), arg);
+        }
 
         worlds.add(world);
       }
@@ -51,14 +57,14 @@ public class CheckCmd extends CommandModule {
       worlds = Bukkit.getWorlds();
     }
 
-    int removed1 = 0,
-        mobs = 0,
-        animals = 0,
-        chunks = 0,
-        spawners = 0,
-        activehoppers = 0,
-        inactivehoppers = 0,
-        players = 0;
+    int removed1 = 0;
+    int mobs = 0;
+    int animals = 0;
+    int chunks = 0;
+    int spawners = 0;
+    int activehoppers = 0;
+    int inactivehoppers = 0;
+    int players = 0;
 
     for (World w : worlds) {
 
@@ -81,10 +87,15 @@ public class CheckCmd extends CommandModule {
         }
 
         for (Entity e : c.getEntities()) {
-          if (e instanceof Monster) mobs++;
-          else if (e instanceof Player) players++;
-          else if (e instanceof Creature) animals++;
-          else if (e instanceof Item) removed1++;
+          if (e instanceof Monster) {
+            mobs++;
+          } else if (e instanceof Player) {
+            players++;
+          } else if (e instanceof Creature) {
+            animals++;
+          } else if (e instanceof Item) {
+            removed1++;
+          }
         }
         chunks++;
       }
@@ -114,7 +125,9 @@ public class CheckCmd extends CommandModule {
 
   private boolean isHopperEmpty(Hopper hop) {
     for (ItemStack it : hop.getInventory().getContents()) {
-      if (it != null) return false;
+      if (it != null) {
+        return false;
+      }
     }
     return true;
   }

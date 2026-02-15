@@ -11,6 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.plugin.PluginManager;
 
+/** Unload chunks command. */
 public class UnloadChunksCmd extends CommandModule {
 
   @LanguageValue(key = "command.unloadchunks.print")
@@ -21,7 +22,8 @@ public class UnloadChunksCmd extends CommandModule {
 
     sender.sendMessage(
         ChatColor.RED
-            + "This command is not recommended in versions above 1.8. If you are having trouble with chunks, use chunk-gc in the bukkit.yml file.");
+            + "This command is not recommended in versions above 1.8. "
+            + "If you are having trouble with chunks, use chunk-gc in the bukkit.yml file.");
 
     int chunkcount = 0;
 

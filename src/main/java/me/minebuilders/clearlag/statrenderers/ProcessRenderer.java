@@ -1,6 +1,10 @@
 package me.minebuilders.clearlag.statrenderers;
 
-import static java.lang.Thread.State.*;
+import static java.lang.Thread.State.BLOCKED;
+import static java.lang.Thread.State.NEW;
+import static java.lang.Thread.State.RUNNABLE;
+import static java.lang.Thread.State.TIMED_WAITING;
+import static java.lang.Thread.State.WAITING;
 
 import java.util.LinkedList;
 import java.util.Timer;
@@ -17,11 +21,13 @@ import org.bukkit.map.MapView;
 import org.bukkit.map.MinecraftFont;
 
 /**
+ * Process renderer.
+ *
  * @author bob7l
  */
 public class ProcessRenderer extends StatRenderer {
 
-  private final int TICK_LENGTH = 50;
+  private final int tickLength = 50;
 
   private final int[] stateGroupTable = new int[5];
 
@@ -85,7 +91,7 @@ public class ProcessRenderer extends StatRenderer {
 
     if (!threadStateColumns.isEmpty()) {
 
-      totalTime = threadStateColumns.size() * TICK_LENGTH;
+      totalTime = threadStateColumns.size() * tickLength;
 
       for (StateColumn stateColumn : threadStateColumns) {
 
@@ -97,7 +103,9 @@ public class ProcessRenderer extends StatRenderer {
 
           if (length > 0) {
 
-            if (i == 4) sleepTime += length;
+            if (i == 4) {
+              sleepTime += length;
+            }
 
             final byte color = stateColorTable[i];
 
@@ -163,7 +171,7 @@ public class ProcessRenderer extends StatRenderer {
     @Override
     public void run() {
 
-      if (currentColumn.length >= TICK_LENGTH) {
+      if (currentColumn.length >= tickLength) {
 
         lock.lock();
 
@@ -171,7 +179,9 @@ public class ProcessRenderer extends StatRenderer {
 
           threadStateColumns.addFirst(currentColumn);
 
-          if (threadStateColumns.size() > width) threadStateColumns.removeLast();
+          if (threadStateColumns.size() > width) {
+            threadStateColumns.removeLast();
+          }
 
         } catch (Exception e) {
           e.printStackTrace();

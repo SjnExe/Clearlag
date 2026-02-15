@@ -5,10 +5,16 @@ import me.minebuilders.clearlag.adapters.VersionAdapter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.map.*;
+import org.bukkit.map.MapCanvas;
+import org.bukkit.map.MapCursorCollection;
+import org.bukkit.map.MapPalette;
+import org.bukkit.map.MapRenderer;
+import org.bukkit.map.MapView;
 import org.bukkit.scheduler.BukkitTask;
 
 /**
+ * Stat renderer.
+ *
  * @author bob7l
  */
 public abstract class StatRenderer extends MapRenderer implements Runnable {
@@ -80,10 +86,13 @@ public abstract class StatRenderer extends MapRenderer implements Runnable {
 
     final MapCursorCollection mapCursorCollection = mapCanvas.getCursors();
 
-    while (mapCursorCollection.size() > 0)
+    while (mapCursorCollection.size() > 0) {
       mapCursorCollection.removeCursor(mapCursorCollection.getCursor(0));
+    }
 
-    if (!pendingRefresh) return;
+    if (!pendingRefresh) {
+      return;
+    }
 
     for (int i = width; i >= 0; --i) {
       for (int j = height; j >= 0; --j) {
