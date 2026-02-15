@@ -7,7 +7,7 @@
 ####----> Commands -->
 command.error.wrongUsage({usage},{name})=&c语法错误： &8/&7lagg {name} {usage}
 command.error.noPermission({name})=&c没有权限使用 &8/&7lagg {name}
-command.error.onlyForPlayer()=&c只能被玩家使用的指令！
+command.error.onlyForPlayers()=&c只能被玩家使用的指令！
 
 ##]-> /lagg
 command.lagg.nopermission()=&c没有权限使用这个指令！

@@ -3,7 +3,7 @@
 ####----> Commands -->
 command.error.wrongUsage({usage},{name})=&cŠpatné použití: &8/&7lagg {name} {usage}
 command.error.noPermission({name})=&cNemáš práva na &8/&7lagg {name}
-command.error.onlyForPlayer()=&cTento příkaz můžou použít pouze hráči!
+command.error.onlyForPlayers()=&cTento příkaz můžou použít pouze hráči!
 
 ##]-> /lagg
 command.lagg.nopermission()=&cNa tento příkaz nemáš práva!

@@ -7,7 +7,7 @@
 ####----> Commands -->
 command.error.wrongUsage({usage},{name})=&cWrong usage: &8/&7lagg {name} {usage}
 command.error.noPermission({name})=&cYou do not have permission to use &8/&7lagg {name}
-command.error.onlyForPlayer()=&cThis command can only be used by players!
+command.error.onlyForPlayers()=&cThis command can only be used by players!
 
 ##]-> /lagg
 command.lagg.nopermission()=&cYou do not have permission to use this command!
