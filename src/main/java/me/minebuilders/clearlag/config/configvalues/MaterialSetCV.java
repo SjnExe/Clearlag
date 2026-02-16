@@ -1,7 +1,7 @@
 package me.minebuilders.clearlag.config.configvalues;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.LinkedList;
 import java.util.List;
 import me.minebuilders.clearlag.Util;
 import me.minebuilders.clearlag.annotations.AutoWire;
@@ -18,7 +18,7 @@ public class MaterialSetCV implements ConfigData<EnumSet<Material>> {
 
     List<String> types = configHandler.getConfig().getStringList(path);
 
-    List<Material> materials = new LinkedList<>();
+    List<Material> materials = new ArrayList<>();
 
     for (String str : types) {
 
@@ -35,6 +35,6 @@ public class MaterialSetCV implements ConfigData<EnumSet<Material>> {
       }
     }
 
-    return (materials.size() > 0 ? EnumSet.copyOf(materials) : EnumSet.noneOf(Material.class));
+    return (!materials.isEmpty() ? EnumSet.copyOf(materials) : EnumSet.noneOf(Material.class));
   }
 }

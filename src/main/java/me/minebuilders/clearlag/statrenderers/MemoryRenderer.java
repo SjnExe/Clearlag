@@ -4,8 +4,9 @@ import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryPoolMXBean;
 import java.lang.management.MemoryType;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Deque;
 import java.util.List;
 import me.minebuilders.clearlag.RAMUtil;
 import me.minebuilders.clearlag.adapters.VersionAdapter;
@@ -33,7 +34,7 @@ public class MemoryRenderer extends StatRenderer {
         MapPalette.BROWN
       };
 
-  private final LinkedList<MemorySampleColumn> memorySamples = new LinkedList<>();
+  private final Deque<MemorySampleColumn> memorySamples = new ArrayDeque<>();
 
   private final List<MemoryPoolMXBean> memoryBeans = new ArrayList<>();
 

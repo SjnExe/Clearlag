@@ -5,8 +5,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import me.minebuilders.clearlag.Util;
@@ -131,7 +131,7 @@ public class LanguageLoader {
 
       if (message.trim().equals("{")) {
 
-        List<String> currentMessageBlock = new LinkedList<>();
+        List<String> currentMessageBlock = new ArrayList<>();
 
         while ((line = reader.readLine()) != null && !line.trim().equals("}"))
           currentMessageBlock.add(Util.color(line));

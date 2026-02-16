@@ -6,7 +6,8 @@ import static java.lang.Thread.State.RUNNABLE;
 import static java.lang.Thread.State.TIMED_WAITING;
 import static java.lang.Thread.State.WAITING;
 
-import java.util.LinkedList;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
@@ -35,7 +36,7 @@ public class ProcessRenderer extends StatRenderer {
 
   private final Thread watchingThread;
 
-  private final LinkedList<StateColumn> threadStateColumns = new LinkedList<>();
+  private final Deque<StateColumn> threadStateColumns = new ArrayDeque<>();
 
   private final Lock lock = new ReentrantLock();
 

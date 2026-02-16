@@ -3,7 +3,6 @@ package me.minebuilders.clearlag.commands;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import me.minebuilders.clearlag.Callback;
 import me.minebuilders.clearlag.Clearlag;
@@ -43,32 +42,17 @@ public class SampleMemoryCmd extends CommandModule {
     new MemorySamlier(
             Integer.parseInt(args[0]) * 20,
             (s) -> {
-              int validMemorySamples = 0;
+              java.util.LongSummaryStatistics memoryStats =
+                  s.memoryList.stream()
+                      .filter(m -> m > 0)
+                      .mapToLong(Long::longValue)
+                      .summaryStatistics();
 
-              long highestMemory = s.memoryList.get(0);
-              long lowestMemory = highestMemory;
-
-              long totalMemoryUsage = 0;
-
-              for (long memory : s.memoryList) {
-
-                if (memory > 0) {
-
-                  if (memory > highestMemory) {
-                    highestMemory = memory;
-                  }
-
-                  if (memory < lowestMemory) {
-                    lowestMemory = memory;
-                  }
-
-                  totalMemoryUsage += memory;
-
-                  ++validMemorySamples;
-                }
-              }
-
-              long averageMemory = (totalMemoryUsage / validMemorySamples);
+              // If count is 0, defaults are 0, min/max are MAX_VALUE/MIN_VALUE. Handle gracefully.
+              long count = memoryStats.getCount();
+              long highestMemory = count > 0 ? memoryStats.getMax() : 0;
+              // long lowestMemory = count > 0 ? memoryStats.getMin() : 0; // Unused
+              long averageMemory = count > 0 ? (long) memoryStats.getAverage() : 0;
 
               lang.sendMessage("header", sender);
 
@@ -80,38 +64,26 @@ public class SampleMemoryCmd extends CommandModule {
                   Util.getChatColorByNumberLength((int) averageMemory, 30, 100)
                       + Long.toString(averageMemory));
 
-              // Todo: Replace this pointless code with new Java 8 features...
               if (s.gcCollectionTickstamps.size() > 1) {
 
-                long highestGc = s.gcCollectionTickstamps.get(0).data;
-                long lowestGc = highestGc;
+                java.util.LongSummaryStatistics gcStats =
+                    s.gcCollectionTickstamps.stream()
+                        .mapToLong(sample -> sample.data)
+                        .summaryStatistics();
 
-                long totalGc = 0;
+                long highestGc = gcStats.getMax();
+                long lowestGc = gcStats.getMin();
+                long averageGc = (long) gcStats.getAverage();
 
                 int totalBetweenGcTime = 0;
-
                 Sample lastSample = null;
 
                 for (Sample sample : s.gcCollectionTickstamps) {
-
-                  if (highestGc < sample.data) {
-                    highestGc = sample.data;
-                  }
-
-                  if (lowestGc > sample.data) {
-                    lowestGc = sample.data;
-                  }
-
-                  totalGc += sample.data;
-
                   if (lastSample != null) {
                     totalBetweenGcTime += (sample.timeStamp - lastSample.timeStamp);
                   }
-
                   lastSample = sample;
                 }
-
-                long averageGc = (totalGc / s.gcCollectionTickstamps.size());
 
                 int averageBetweenTime =
                     (totalBetweenGcTime / (s.gcCollectionTickstamps.size() - 1));
@@ -144,7 +116,7 @@ public class SampleMemoryCmd extends CommandModule {
 
     private long lastMemoryUsed = RAMUtil.getUsedMemory();
 
-    private final List<Sample> gcCollectionTickstamps = new LinkedList<>();
+    private final List<Sample> gcCollectionTickstamps = new ArrayList<>();
 
     private final List<Long> memoryList;
 
