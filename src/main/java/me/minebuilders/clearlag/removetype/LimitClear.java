@@ -41,8 +41,8 @@ public class LimitClear extends ClearModule {
 
   @Override
   public boolean isRemovable(Entity e) {
-    if (e instanceof Item) {
-      return (item && !itemFilter.contains((((Item) e).getItemStack().getType())));
+    if (e instanceof Item itemEntity) {
+      return (item && !itemFilter.contains(itemEntity.getItemStack().getType()));
     }
     if (e instanceof ItemFrame) {
       return itemframe;
