@@ -1,7 +1,16 @@
 package me.minebuilders.clearlag.config;
 
 import me.minebuilders.clearlag.Clearlag;
-import me.minebuilders.clearlag.config.configvalues.*;
+import me.minebuilders.clearlag.config.configvalues.ColoredStringCV;
+import me.minebuilders.clearlag.config.configvalues.ColoredStringsCV;
+import me.minebuilders.clearlag.config.configvalues.ConfigData;
+import me.minebuilders.clearlag.config.configvalues.EntityLimitMapCV;
+import me.minebuilders.clearlag.config.configvalues.EntityTypeTable;
+import me.minebuilders.clearlag.config.configvalues.MaterialIntegerMapCV;
+import me.minebuilders.clearlag.config.configvalues.MaterialSetCV;
+import me.minebuilders.clearlag.config.configvalues.PrimitiveCV;
+import me.minebuilders.clearlag.config.configvalues.StringSetCV;
+import me.minebuilders.clearlag.config.configvalues.WarnMapCV;
 
 /** Created by TCP on 2/3/2016. */
 public enum ConfigValueType {

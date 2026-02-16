@@ -6,18 +6,60 @@ import me.minebuilders.clearlag.adapters.LatestVersionAdapter;
 import me.minebuilders.clearlag.adapters.VersionAdapter;
 import me.minebuilders.clearlag.annotations.AutoWire;
 import me.minebuilders.clearlag.annotations.ConfigPath;
-import me.minebuilders.clearlag.commands.*;
+import me.minebuilders.clearlag.commands.AdminCmd;
+import me.minebuilders.clearlag.commands.AreaCmd;
+import me.minebuilders.clearlag.commands.CheckChunkCmd;
+import me.minebuilders.clearlag.commands.CheckCmd;
+import me.minebuilders.clearlag.commands.ChunkCmd;
+import me.minebuilders.clearlag.commands.ClearCmd;
+import me.minebuilders.clearlag.commands.DebugCmd;
+import me.minebuilders.clearlag.commands.GcCmd;
+import me.minebuilders.clearlag.commands.HaltCmd;
+import me.minebuilders.clearlag.commands.KillmobsCmd;
+import me.minebuilders.clearlag.commands.MemoryCmd;
+import me.minebuilders.clearlag.commands.PerformanceCmd;
+import me.minebuilders.clearlag.commands.ProfileCmd;
+import me.minebuilders.clearlag.commands.ReloadCmd;
+import me.minebuilders.clearlag.commands.SampleMemoryCmd;
+import me.minebuilders.clearlag.commands.TickSamplerCmd;
+import me.minebuilders.clearlag.commands.TpChunkCmd;
+import me.minebuilders.clearlag.commands.TpsCmd;
+import me.minebuilders.clearlag.commands.UnloadChunksCmd;
 import me.minebuilders.clearlag.config.ConfigHandler;
 import me.minebuilders.clearlag.language.LanguageManager;
-import me.minebuilders.clearlag.listeners.*;
+import me.minebuilders.clearlag.listeners.ChunkEntityLimiterListener;
+import me.minebuilders.clearlag.listeners.ChunkLimiterListener;
+import me.minebuilders.clearlag.listeners.ChunkOverloadListener;
+import me.minebuilders.clearlag.listeners.ChunkPerEntityLimiterListener;
+import me.minebuilders.clearlag.listeners.DispenceLimitEvent;
+import me.minebuilders.clearlag.listeners.EggSpawnListener;
+import me.minebuilders.clearlag.listeners.EntityAISpawnListener;
+import me.minebuilders.clearlag.listeners.EntityBreedListener;
+import me.minebuilders.clearlag.listeners.FireSpreadListener;
+import me.minebuilders.clearlag.listeners.HopperLimitListener;
+import me.minebuilders.clearlag.listeners.ItemLivetimeListener;
+import me.minebuilders.clearlag.listeners.ItemMergeListener;
+import me.minebuilders.clearlag.listeners.MobLimitListener;
+import me.minebuilders.clearlag.listeners.MobSpawerListener;
+import me.minebuilders.clearlag.listeners.TNTMinecartListener;
+import me.minebuilders.clearlag.listeners.TntReduceListener;
 import me.minebuilders.clearlag.managers.EntityManager;
 import me.minebuilders.clearlag.modules.BroadcastHandler;
 import me.minebuilders.clearlag.modules.Module;
 import me.minebuilders.clearlag.reflection.AutoWirer;
-import me.minebuilders.clearlag.tasks.*;
+import me.minebuilders.clearlag.tasks.ClearTask;
+import me.minebuilders.clearlag.tasks.HaltTask;
+import me.minebuilders.clearlag.tasks.LagSpikeTask;
+import me.minebuilders.clearlag.tasks.LimitTask;
+import me.minebuilders.clearlag.tasks.LiveTask;
+import me.minebuilders.clearlag.tasks.LogPurger;
+import me.minebuilders.clearlag.tasks.RAMCheckTask;
+import me.minebuilders.clearlag.tasks.TPSCheckTask;
+import me.minebuilders.clearlag.tasks.TPSTask;
 import me.minebuilders.clearlag.triggeredremoval.TriggerManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+/** Main class. */
 public class Clearlag extends JavaPlugin {
 
   @AutoWire private ConfigHandler config;
@@ -139,9 +181,12 @@ public class Clearlag extends JavaPlugin {
 
       try {
 
-        final VersionAdapter tryingVersionAdapter = versionAdapterType.getDeclaredConstructor().newInstance();
+        final VersionAdapter tryingVersionAdapter =
+            versionAdapterType.getDeclaredConstructor().newInstance();
 
-        if (tryingVersionAdapter.isCompatible()) return tryingVersionAdapter;
+        if (tryingVersionAdapter.isCompatible()) {
+          return tryingVersionAdapter;
+        }
 
       } catch (Throwable t) {
         Util.debug(t);

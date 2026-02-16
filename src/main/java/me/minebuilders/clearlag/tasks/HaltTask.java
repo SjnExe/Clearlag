@@ -2,6 +2,7 @@ package me.minebuilders.clearlag.tasks;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.UUID;
 import me.minebuilders.clearlag.Clearlag;
 import me.minebuilders.clearlag.annotations.AutoWire;
 import me.minebuilders.clearlag.annotations.ConfigPath;
@@ -12,13 +13,31 @@ import me.minebuilders.clearlag.modules.ClearModule;
 import me.minebuilders.clearlag.modules.ClearlagModule;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.entity.*;
-import org.bukkit.event.*;
-import org.bukkit.event.block.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.ExperienceOrb;
+import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.Monster;
+import org.bukkit.entity.SpawnCategory;
+import org.bukkit.entity.TNTPrimed;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventException;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockFadeEvent;
+import org.bukkit.event.block.BlockFormEvent;
+import org.bukkit.event.block.BlockFromToEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockSpreadEvent;
+import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.PluginManager;
 
+/** Halt task. */
 @ConfigPath(path = "halt-command")
 public class HaltTask extends ClearlagModule implements Listener {
 
@@ -30,7 +49,7 @@ public class HaltTask extends ClearlagModule implements Listener {
 
   @AutoWire private ConfigHandler config;
 
-  private HashMap<World, Integer[]> valuelist;
+  private HashMap<UUID, Integer[]> valuelist;
 
   @Override
   public void setEnabled() {
@@ -47,11 +66,11 @@ public class HaltTask extends ClearlagModule implements Listener {
 
               @Override
               public boolean isRemovable(Entity e) {
-                return (((e instanceof Item))
-                    || ((e instanceof TNTPrimed))
-                    || ((e instanceof ExperienceOrb))
-                    || ((e instanceof FallingBlock))
-                    || ((e instanceof Monster)));
+                return e instanceof Item
+                    || e instanceof TNTPrimed
+                    || e instanceof ExperienceOrb
+                    || e instanceof FallingBlock
+                    || e instanceof Monster;
               }
 
               @Override
@@ -65,20 +84,20 @@ public class HaltTask extends ClearlagModule implements Listener {
 
         Integer[] values = new Integer[6];
 
-        values[0] = w.getAmbientSpawnLimit();
-        w.setAmbientSpawnLimit(0);
-        values[1] = w.getAnimalSpawnLimit();
-        w.setAnimalSpawnLimit(0);
-        values[2] = w.getMonsterSpawnLimit();
-        w.setMonsterSpawnLimit(0);
-        values[3] = (int) w.getTicksPerAnimalSpawns();
-        w.setTicksPerAnimalSpawns(0);
-        values[4] = (int) w.getTicksPerMonsterSpawns();
-        w.setTicksPerMonsterSpawns(0);
-        values[5] = w.getWaterAnimalSpawnLimit();
-        w.setWaterAnimalSpawnLimit(0);
+        values[0] = w.getSpawnLimit(SpawnCategory.AMBIENT);
+        w.setSpawnLimit(SpawnCategory.AMBIENT, 0);
+        values[1] = w.getSpawnLimit(SpawnCategory.ANIMAL);
+        w.setSpawnLimit(SpawnCategory.ANIMAL, 0);
+        values[2] = w.getSpawnLimit(SpawnCategory.MONSTER);
+        w.setSpawnLimit(SpawnCategory.MONSTER, 0);
+        values[3] = (int) w.getTicksPerSpawns(SpawnCategory.ANIMAL);
+        w.setTicksPerSpawns(SpawnCategory.ANIMAL, 0);
+        values[4] = (int) w.getTicksPerSpawns(SpawnCategory.MONSTER);
+        w.setTicksPerSpawns(SpawnCategory.MONSTER, 0);
+        values[5] = w.getSpawnLimit(SpawnCategory.WATER_ANIMAL);
+        w.setSpawnLimit(SpawnCategory.WATER_ANIMAL, 0);
 
-        valuelist.put(w, values);
+        valuelist.put(w.getUID(), values);
       }
     }
 
@@ -141,14 +160,17 @@ public class HaltTask extends ClearlagModule implements Listener {
 
     if (!valuelist.isEmpty()) {
 
-      for (World w : valuelist.keySet()) {
-        Integer[] values = valuelist.get(w);
-        w.setAmbientSpawnLimit(values[0]);
-        w.setAnimalSpawnLimit(values[1]);
-        w.setMonsterSpawnLimit(values[2]);
-        w.setTicksPerAnimalSpawns(values[3]);
-        w.setTicksPerMonsterSpawns(values[4]);
-        w.setWaterAnimalSpawnLimit(values[5]);
+      for (UUID uuid : valuelist.keySet()) {
+        World w = Bukkit.getWorld(uuid);
+        if (w != null) {
+          Integer[] values = valuelist.get(uuid);
+          w.setSpawnLimit(SpawnCategory.AMBIENT, values[0]);
+          w.setSpawnLimit(SpawnCategory.ANIMAL, values[1]);
+          w.setSpawnLimit(SpawnCategory.MONSTER, values[2]);
+          w.setTicksPerSpawns(SpawnCategory.ANIMAL, values[3]);
+          w.setTicksPerSpawns(SpawnCategory.MONSTER, values[4]);
+          w.setSpawnLimit(SpawnCategory.WATER_ANIMAL, values[5]);
+        }
       }
     }
 

@@ -1,6 +1,6 @@
 package me.minebuilders.clearlag.modules;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -9,7 +9,7 @@ import org.bukkit.entity.Entity;
 public abstract class ClearModule extends ClearlagModule {
 
   public List<Entity> getRemovables(List<Entity> list, World w) {
-    List<Entity> en = new LinkedList<>();
+    List<Entity> en = new ArrayList<>();
 
     if (isWorldEnabled(w)) {
 
@@ -25,7 +25,7 @@ public abstract class ClearModule extends ClearlagModule {
 
   public List<Entity> getAllRemovables() {
 
-    List<Entity> en = new LinkedList<>();
+    List<Entity> en = new ArrayList<>();
 
     for (World w : Bukkit.getWorlds()) {
 

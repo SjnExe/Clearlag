@@ -12,6 +12,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
+/** Check chunk command. */
 public class CheckChunkCmd extends CommandModule {
 
   @LanguageValue(key = "command.checkchunk.line")
@@ -29,8 +30,9 @@ public class CheckChunkCmd extends CommandModule {
 
     final Map<EntityType, Integer> entityCountMap = new IdentityHashMap<>(100);
 
-    for (BlockState bt : c.getTileEntities())
+    for (BlockState bt : c.getTileEntities()) {
       tileEntityCountMap.merge(bt.getClass(), 1, Integer::sum);
+    }
 
     for (Entity e : c.getEntities()) {
 
@@ -43,17 +45,19 @@ public class CheckChunkCmd extends CommandModule {
 
     lang.sendMessage("tilelist", sender);
 
-    for (Map.Entry<Class<?>, Integer> tileEntry : tileEntityCountMap.entrySet())
+    for (Map.Entry<Class<?>, Integer> tileEntry : tileEntityCountMap.entrySet()) {
       lineMessage.sendMessage(
           sender, tileEntry.getValue(), tileEntry.getKey().getSimpleName().replace("Craft", ""));
+    }
 
     lang.sendMessage("entitylist", sender);
 
-    for (Map.Entry<EntityType, Integer> entityEntry : entityCountMap.entrySet())
+    for (Map.Entry<EntityType, Integer> entityEntry : entityCountMap.entrySet()) {
       lineMessage.sendMessage(
           sender,
           entityEntry.getValue(),
           entityEntry.getKey().name().toLowerCase().replace("_", " "));
+    }
 
     lang.sendMessage("footer", sender);
   }

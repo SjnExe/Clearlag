@@ -12,6 +12,7 @@ import me.minebuilders.clearlag.modules.TaskModule;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
+/** Admin command. */
 public class AdminCmd extends CommandModule {
 
   @AutoWire private ConfigHandler configHandler;
@@ -114,7 +115,9 @@ public class AdminCmd extends CommandModule {
           StringBuilder sb = new StringBuilder();
 
           for (Module m : Clearlag.getModules()) {
-            if (!m.isEnabled()) sb.append(", ").append(m.getClass().getSimpleName());
+            if (!m.isEnabled()) {
+              sb.append(", ").append(m.getClass().getSimpleName());
+            }
           }
 
           lang.sendMessage("startableModules", sender, sb.substring(2));

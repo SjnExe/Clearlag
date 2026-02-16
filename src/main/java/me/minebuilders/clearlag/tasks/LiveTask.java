@@ -7,8 +7,13 @@ import me.minebuilders.clearlag.config.ConfigHandler;
 import me.minebuilders.clearlag.modules.TaskModule;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.LivingEntity;
 
+/** Live task. */
 @ConfigPath(path = "live-time")
 public class LiveTask extends TaskModule {
 
@@ -26,15 +31,22 @@ public class LiveTask extends TaskModule {
 
   @AutoWire private ConfigHandler configHandler;
 
+  @Override
   public void run() {
     for (World w : Bukkit.getWorlds()) {
       for (Entity e : w.getEntities()) {
         if (mobtimer && e instanceof LivingEntity && !(e instanceof HumanEntity)) {
-          if (e.getTicksLived() > moblivetime) e.remove();
+          if (e.getTicksLived() > moblivetime) {
+            e.remove();
+          }
         } else if (itemtimer && e instanceof Item) {
-          if (e.getTicksLived() > itemlivetime) e.remove();
+          if (e.getTicksLived() > itemlivetime) {
+            e.remove();
+          }
         } else if (arrowtimer && e instanceof Arrow) {
-          if (e.getTicksLived() > arrowkilltime) e.remove();
+          if (e.getTicksLived() > arrowkilltime) {
+            e.remove();
+          }
         }
       }
     }

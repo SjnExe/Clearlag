@@ -3,7 +3,6 @@ package me.minebuilders.clearlag.commands;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import me.minebuilders.clearlag.Callback;
 import me.minebuilders.clearlag.Clearlag;
@@ -17,6 +16,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
+ * Sample memory command.
+ *
  * @author bob7l
  */
 public class SampleMemoryCmd extends CommandModule {
@@ -31,8 +32,9 @@ public class SampleMemoryCmd extends CommandModule {
   @Override
   protected void run(CommandSender sender, String[] args) throws WrongCommandArgumentException {
 
-    if (!Util.isInteger(args[0]))
+    if (!Util.isInteger(args[0])) {
       throw new WrongCommandArgumentException(lang.getMessage("invalidinteger"), args[0]);
+    }
 
     lang.sendMessage("begin", sender, args[0]);
 
@@ -40,28 +42,17 @@ public class SampleMemoryCmd extends CommandModule {
     new MemorySamlier(
             Integer.parseInt(args[0]) * 20,
             (s) -> {
-              int validMemorySamples = 0;
+              java.util.LongSummaryStatistics memoryStats =
+                  s.memoryList.stream()
+                      .filter(m -> m > 0)
+                      .mapToLong(Long::longValue)
+                      .summaryStatistics();
 
-              long highestMemory = s.memoryList.get(0);
-              long lowestMemory = highestMemory;
-
-              long totalMemoryUsage = 0;
-
-              for (long memory : s.memoryList) {
-
-                if (memory > 0) {
-
-                  if (memory > highestMemory) highestMemory = memory;
-
-                  if (memory < lowestMemory) lowestMemory = memory;
-
-                  totalMemoryUsage += memory;
-
-                  ++validMemorySamples;
-                }
-              }
-
-              long averageMemory = (totalMemoryUsage / validMemorySamples);
+              // If count is 0, defaults are 0, min/max are MAX_VALUE/MIN_VALUE. Handle gracefully.
+              long count = memoryStats.getCount();
+              long highestMemory = count > 0 ? memoryStats.getMax() : 0;
+              // long lowestMemory = count > 0 ? memoryStats.getMin() : 0; // Unused
+              long averageMemory = count > 0 ? (long) memoryStats.getAverage() : 0;
 
               lang.sendMessage("header", sender);
 
@@ -73,45 +64,37 @@ public class SampleMemoryCmd extends CommandModule {
                   Util.getChatColorByNumberLength((int) averageMemory, 30, 100)
                       + Long.toString(averageMemory));
 
-              // Todo: Replace this pointless code with new Java 8 features...
               if (s.gcCollectionTickstamps.size() > 1) {
 
-                long highestGC = s.gcCollectionTickstamps.get(0).data;
-                long lowestGC = highestGC;
+                java.util.LongSummaryStatistics gcStats =
+                    s.gcCollectionTickstamps.stream()
+                        .mapToLong(sample -> sample.data)
+                        .summaryStatistics();
 
-                long totalGC = 0;
+                long highestGc = gcStats.getMax();
+                long lowestGc = gcStats.getMin();
+                long averageGc = (long) gcStats.getAverage();
 
-                int totalBetweenGCTime = 0;
-
+                int totalBetweenGcTime = 0;
                 Sample lastSample = null;
 
                 for (Sample sample : s.gcCollectionTickstamps) {
-
-                  if (highestGC < sample.data) highestGC = sample.data;
-
-                  if (lowestGC > sample.data) lowestGC = sample.data;
-
-                  totalGC += sample.data;
-
                   if (lastSample != null) {
-                    totalBetweenGCTime += (sample.timeStamp - lastSample.timeStamp);
+                    totalBetweenGcTime += (sample.timeStamp - lastSample.timeStamp);
                   }
-
                   lastSample = sample;
                 }
 
-                long averageGC = (totalGC / s.gcCollectionTickstamps.size());
-
                 int averageBetweenTime =
-                    (totalBetweenGCTime / (s.gcCollectionTickstamps.size() - 1));
+                    (totalBetweenGcTime / (s.gcCollectionTickstamps.size() - 1));
 
                 lang.sendMessage(
                     "gc",
                     sender,
                     s.gcCollectionTickstamps.size(),
-                    Util.getChatColorByNumberLength((int) highestGC, 100, 200) + "" + highestGC,
-                    Util.getChatColorByNumberLength((int) lowestGC, 100, 200) + "" + lowestGC,
-                    Util.getChatColorByNumberLength((int) averageGC, 100, 200) + "" + averageGC,
+                    Util.getChatColorByNumberLength((int) highestGc, 100, 200) + "" + highestGc,
+                    Util.getChatColorByNumberLength((int) lowestGc, 100, 200) + "" + lowestGc,
+                    Util.getChatColorByNumberLength((int) averageGc, 100, 200) + "" + averageGc,
                     averageBetweenTime);
 
               } else {
@@ -127,13 +110,13 @@ public class SampleMemoryCmd extends CommandModule {
 
     private final int runTicks;
 
-    private long gcCollections = getTotalGCEvents();
+    private long gcCollections = getTotalGcEvents();
 
-    private long gcLastPauseTime = getTotalGCCompleteTime();
+    private long gcLastPauseTime = getTotalGcCompleteTime();
 
     private long lastMemoryUsed = RAMUtil.getUsedMemory();
 
-    private final List<Sample> gcCollectionTickstamps = new LinkedList<>();
+    private final List<Sample> gcCollectionTickstamps = new ArrayList<>();
 
     private final List<Long> memoryList;
 
@@ -149,11 +132,11 @@ public class SampleMemoryCmd extends CommandModule {
     @Override
     public void run() {
 
-      long currentGcCollections = getTotalGCEvents();
+      long currentGcCollections = getTotalGcEvents();
 
       if (currentGcCollections != gcCollections) {
 
-        long currentTotalGCPauseTime = getTotalGCCompleteTime();
+        long currentTotalGCPauseTime = getTotalGcCompleteTime();
 
         gcCollectionTickstamps.add(
             new Sample(currentTick, currentTotalGCPauseTime - gcLastPauseTime));
@@ -174,7 +157,7 @@ public class SampleMemoryCmd extends CommandModule {
       }
     }
 
-    private long getTotalGCEvents() {
+    private long getTotalGcEvents() {
 
       long totalGarbageCollections = 0;
 
@@ -190,7 +173,7 @@ public class SampleMemoryCmd extends CommandModule {
       return totalGarbageCollections;
     }
 
-    private long getTotalGCCompleteTime() {
+    private long getTotalGcCompleteTime() {
 
       long totalGarbageCollections = 0;
 

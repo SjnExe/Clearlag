@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
+/** Memory command. */
 public class MemoryCmd extends CommandModule {
 
   @LanguageValue(key = "command.memory.")
@@ -30,15 +31,17 @@ public class MemoryCmd extends CommandModule {
   protected void run(Player p, String[] args) throws WrongCommandArgumentException {
 
     if (p.getInventory().getItemInHand() != null
-        && p.getInventory().getItemInHand().getType() != Material.AIR)
+        && p.getInventory().getItemInHand().getType() != Material.AIR) {
       p.getWorld().dropItem(p.getLocation(), p.getItemInHand());
+    }
 
     int sampleRate = 5;
 
     if (args.length > 0) {
 
-      if (!Util.isInteger(args[0]))
+      if (!Util.isInteger(args[0])) {
         throw new WrongCommandArgumentException(lang.getMessage("invalidinteger"), args[0]);
+      }
 
       sampleRate = Math.max(1, Integer.parseInt(args[0]));
     }
@@ -47,7 +50,9 @@ public class MemoryCmd extends CommandModule {
 
     view.setScale(MapView.Scale.NORMAL);
 
-    for (MapRenderer renderer : view.getRenderers()) view.removeRenderer(renderer);
+    for (MapRenderer renderer : view.getRenderers()) {
+      view.removeRenderer(renderer);
+    }
 
     final ItemStack mapItemStack = versionAdapter.createMapItemStack(view);
 

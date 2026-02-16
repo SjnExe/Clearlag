@@ -2,7 +2,11 @@ package me.minebuilders.clearlag.commands;
 
 import java.util.HashMap;
 import java.util.Map;
-import me.minebuilders.clearlag.*;
+import me.minebuilders.clearlag.Callback;
+import me.minebuilders.clearlag.ChunkKey;
+import me.minebuilders.clearlag.Clearlag;
+import me.minebuilders.clearlag.MutableInt;
+import me.minebuilders.clearlag.Util;
 import me.minebuilders.clearlag.exceptions.WrongCommandArgumentException;
 import me.minebuilders.clearlag.language.LanguageValue;
 import me.minebuilders.clearlag.language.messages.Message;
@@ -22,6 +26,8 @@ import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
+ * Profile command.
+ *
  * @author bob7l
  */
 public class ProfileCmd extends CommandModule {
@@ -48,8 +54,9 @@ public class ProfileCmd extends CommandModule {
   protected void run(final CommandSender sender, String[] args)
       throws WrongCommandArgumentException {
 
-    if (!Util.isInteger(args[0]))
+    if (!Util.isInteger(args[0])) {
       throw new WrongCommandArgumentException(lang.getMessage("invalidtime"), args[0]);
+    }
 
     final Callback<Map<ChunkKey, MutableInt>> callback =
         chunkKeyMutableIntMap -> {
@@ -111,7 +118,9 @@ public class ProfileCmd extends CommandModule {
 
       for (ProfilerFactory factory : profilerFactories) {
 
-        if (sb.length() > 0) sb.append(", ");
+        if (sb.length() > 0) {
+          sb.append(", ");
+        }
 
         sb.append(factory.getId());
       }
@@ -179,7 +188,9 @@ public class ProfileCmd extends CommandModule {
       if (count == null) {
         count = new MutableInt(1);
         chunkMap.put(key, count);
-      } else count.increment();
+      } else {
+        count.increment();
+      }
     }
   }
 

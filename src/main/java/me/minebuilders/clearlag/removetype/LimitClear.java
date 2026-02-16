@@ -9,8 +9,18 @@ import me.minebuilders.clearlag.config.ConfigValueType;
 import me.minebuilders.clearlag.modules.ClearModule;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Boat;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.ExperienceOrb;
+import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.Minecart;
+import org.bukkit.entity.Painting;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.TNTPrimed;
 
+/** LimitClear module. */
 @ConfigPath(path = "limit")
 public class LimitClear extends ClearModule {
 
@@ -31,15 +41,30 @@ public class LimitClear extends ClearModule {
 
   @Override
   public boolean isRemovable(Entity e) {
-    if (e instanceof Item)
-      return (item && !itemFilter.contains((((Item) e).getItemStack().getType())));
-    if (e instanceof ItemFrame) return itemframe;
-    if (e instanceof FallingBlock) return fallingBlock;
-    if (e instanceof Boat) return (e.isEmpty() && boat);
-    if (e instanceof ExperienceOrb) return experienceOrb;
-    if (e instanceof Painting) return painting;
-    if (e instanceof Projectile) return projectile;
-    if (e instanceof TNTPrimed) return primedTnt;
+    if (e instanceof Item itemEntity) {
+      return (item && !itemFilter.contains(itemEntity.getItemStack().getType()));
+    }
+    if (e instanceof ItemFrame) {
+      return itemframe;
+    }
+    if (e instanceof FallingBlock) {
+      return fallingBlock;
+    }
+    if (e instanceof Boat) {
+      return (e.isEmpty() && boat);
+    }
+    if (e instanceof ExperienceOrb) {
+      return experienceOrb;
+    }
+    if (e instanceof Painting) {
+      return painting;
+    }
+    if (e instanceof Projectile) {
+      return projectile;
+    }
+    if (e instanceof TNTPrimed) {
+      return primedTnt;
+    }
     return e instanceof Minecart && (e.isEmpty() && minecart);
   }
 

@@ -1,16 +1,15 @@
 package me.minebuilders.clearlag;
 
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 
 public class Util {
-
-  private static final Logger log = Logger.getLogger("Minecraft");
 
   private static boolean debugMode = false;
 
@@ -23,16 +22,16 @@ public class Util {
   }
 
   public static void log(String m) {
-    log.info("[ClearLag] " + m);
+    Clearlag.getInstance().getLogger().info(m);
   }
 
   public static void warning(String m) {
-    log.warning("[ClearLag] " + m);
+    Clearlag.getInstance().getLogger().warning(m);
   }
 
   public static void debug(String m) {
     if (debugMode) {
-      log.info("[ClearLag DEBUG] " + m);
+      Clearlag.getInstance().getLogger().info("[DEBUG] " + m);
     }
   }
 
@@ -138,16 +137,15 @@ public class Util {
   }
 
   public static Date parseTime(String time) {
-
     try {
-
       String[] frag = time.split("-");
 
-      if (frag.length < 2) return new Date();
+      if (frag.length < 3) return new Date();
 
-      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+      LocalDate localDate = LocalDate.parse(frag[0] + "-" + frag[1] + "-" + frag[2], formatter);
 
-      return dateFormat.parse(frag[0] + "-" + frag[1] + "-" + frag[2]);
+      return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
     } catch (Exception e) {
       return new Date();

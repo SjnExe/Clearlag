@@ -7,15 +7,24 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
 /**
+ * Entity table.
+ *
  * @author bob7l
  */
 public class EntityTable {
 
+  @SuppressWarnings("unchecked")
   private final List<EntityAttribute<Entity>>[] entityTable =
       new ArrayList[EntityType.values().length + 1];
 
   private static final ArrayList<EntityAttribute<Entity>> EMPTY_COLLECTION = new ArrayList<>(1);
 
+  /**
+   * Contains entity.
+   *
+   * @param entity entity
+   * @return true if contains
+   */
   public boolean containsEntity(Entity entity) {
 
     List<EntityAttribute<Entity>> con = entityTable[entity.getType().ordinal()];
@@ -24,7 +33,11 @@ public class EntityTable {
 
       if (!con.isEmpty()) {
 
-        for (EntityAttribute<Entity> e : con) if (!e.containsData(entity)) return false;
+        for (EntityAttribute<Entity> e : con) {
+          if (!e.containsData(entity)) {
+            return false;
+          }
+        }
       }
 
       return true;

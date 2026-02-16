@@ -9,6 +9,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /**
+ * Broadcast handler.
+ *
  * @author bob7l
  */
 @ConfigPath(path = "global-broadcasts")
@@ -30,10 +32,13 @@ public class BroadcastHandler extends ClearlagModule {
 
     if (isEnabled()) {
 
-      for (int i = 0; i < message.length; ++i) message[i] = Util.color(message[i]);
+      for (int i = 0; i < message.length; ++i) {
+        message[i] = Util.color(message[i]);
+      }
 
-      if (async && !(broadcaster instanceof AsyncBroadcaster))
+      if (async && !(broadcaster instanceof AsyncBroadcaster)) {
         broadcaster = new AsyncBroadcaster(broadcaster);
+      }
 
       broadcaster.broadcast(message);
     }
@@ -47,6 +52,7 @@ public class BroadcastHandler extends ClearlagModule {
     this.broadcaster = broadcaster;
   }
 
+  /** Broadcaster interface. */
   public interface Broadcaster {
 
     void broadcast(String[] message);
@@ -59,13 +65,18 @@ public class BroadcastHandler extends ClearlagModule {
 
       if (usePermissionForBroadcasts) {
 
-        for (String str : message) Bukkit.broadcast(str, permission);
+        for (String str : message) {
+          Bukkit.broadcast(str, permission);
+        }
 
-      } else
+      } else {
         for (Player p : Bukkit.getOnlinePlayers()) {
 
-          for (String str : message) p.sendMessage(str);
+          for (String str : message) {
+            p.sendMessage(str);
+          }
         }
+      }
     }
   }
 

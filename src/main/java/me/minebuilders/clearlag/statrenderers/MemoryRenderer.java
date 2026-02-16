@@ -4,8 +4,9 @@ import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryPoolMXBean;
 import java.lang.management.MemoryType;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Deque;
 import java.util.List;
 import me.minebuilders.clearlag.RAMUtil;
 import me.minebuilders.clearlag.adapters.VersionAdapter;
@@ -18,6 +19,8 @@ import org.bukkit.map.MapView;
 import org.bukkit.map.MinecraftFont;
 
 /**
+ * Memory renderer.
+ *
  * @author bob7l
  */
 public class MemoryRenderer extends StatRenderer {
@@ -31,14 +34,14 @@ public class MemoryRenderer extends StatRenderer {
         MapPalette.BROWN
       };
 
-  private final LinkedList<MemorySampleColumn> memorySamples = new LinkedList<>();
+  private final Deque<MemorySampleColumn> memorySamples = new ArrayDeque<>();
 
   private final List<MemoryPoolMXBean> memoryBeans = new ArrayList<>();
 
   private final List<GarbageCollectorMXBean> gcBeans =
       ManagementFactory.getGarbageCollectorMXBeans();
 
-  private long gcLastPauseTime = getTotalGCCompleteTime();
+  private long gcLastPauseTime = getTotalGcCompleteTime();
 
   public MemoryRenderer(
       Player observer,
@@ -78,7 +81,7 @@ public class MemoryRenderer extends StatRenderer {
     }
   }
 
-  private long getTotalGCCompleteTime() {
+  private long getTotalGcCompleteTime() {
 
     long totalGarbageCollections = 0;
 
@@ -103,17 +106,21 @@ public class MemoryRenderer extends StatRenderer {
       column.addMemorySample(new MemorySample(RAMUtil.toMB(memoryBean.getUsage().getUsed())));
     }
 
-    final long totalGCTime = getTotalGCCompleteTime();
+    final long totalGcTime = getTotalGcCompleteTime();
 
-    final long gcTime = (totalGCTime - gcLastPauseTime);
+    final long gcTime = (totalGcTime - gcLastPauseTime);
 
-    if (gcTime > 0) column.garbageCollectionTime = (int) gcTime;
+    if (gcTime > 0) {
+      column.garbageCollectionTime = (int) gcTime;
+    }
 
-    this.gcLastPauseTime = totalGCTime;
+    this.gcLastPauseTime = totalGcTime;
 
     memorySamples.addLast(column);
 
-    while (memorySamples.size() > width) memorySamples.removeFirst();
+    while (memorySamples.size() > width) {
+      memorySamples.removeFirst();
+    }
   }
 
   @Override
@@ -138,13 +145,13 @@ public class MemoryRenderer extends StatRenderer {
         final byte color =
             memoryPalettes[colorIndex >= memoryPalettes.length ? colorIndex = 0 : colorIndex++];
 
-        final int y = (((sample.usageInMB + baseY) * height) / maxHeapSize);
+        final int y = (((sample.usageInMb + baseY) * height) / maxHeapSize);
 
         for (int j = height - y; j < drawTo; ++j) {
           mapCanvas.setPixel(x, j, color);
         }
 
-        baseY = sample.usageInMB + baseY;
+        baseY = sample.usageInMb + baseY;
         drawTo = height - y;
       }
 
@@ -166,15 +173,15 @@ public class MemoryRenderer extends StatRenderer {
       ++x;
     }
 
-    for (double yPos : new double[] {0.0, 0.25, 0.50, 0.75}) {
+    for (double ypos : new double[] {0.0, 0.25, 0.50, 0.75}) {
 
-      final int y = (int) (((maxHeapSize * yPos) * height) / maxHeapSize);
+      final int y = (int) (((maxHeapSize * ypos) * height) / maxHeapSize);
 
       mapCanvas.drawText(
           5,
           y,
           MinecraftFont.Font,
-          "§48;" + (Math.round(((maxHeapSize * (1 - yPos)) / 1000.0) * 10.0) / 10.0) + "GB");
+          "§48;" + (Math.round(((maxHeapSize * (1 - ypos)) / 1000.0) * 10.0) / 10.0) + "GB");
 
       for (int i = 0; i < 5; ++i) {
         mapCanvas.setPixel(i, y, MapPalette.PALE_BLUE);
@@ -203,10 +210,10 @@ public class MemoryRenderer extends StatRenderer {
 
   private static class MemorySample {
 
-    private final int usageInMB;
+    private final int usageInMb;
 
-    public MemorySample(int usageInMB) {
-      this.usageInMB = usageInMB;
+    public MemorySample(int usageInMb) {
+      this.usageInMb = usageInMb;
     }
   }
 }
