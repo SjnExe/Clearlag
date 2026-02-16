@@ -20,16 +20,16 @@ public class TNTMinecartListener extends EventModule {
     Entity mine = event.getVehicle();
 
     if (mine instanceof ExplosiveMinecart) {
-      int max = 0;
+      int count = 0;
 
       for (Entity tnt : mine.getNearbyEntities(radius, radius, radius)) {
         if (tnt instanceof ExplosiveMinecart) {
-          max++;
+          count++;
+          if (count >= this.max) {
+            mine.remove();
+            return;
+          }
         }
-      }
-
-      if (max >= this.max) {
-        mine.remove();
       }
     }
   }

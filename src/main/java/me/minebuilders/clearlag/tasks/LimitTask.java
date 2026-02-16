@@ -26,7 +26,7 @@ public class LimitTask extends TaskModule {
   @AutoWire private BroadcastHandler broadcastHandler;
 
   public void run() {
-    List<Entity> ents = new ArrayList<Entity>();
+    List<Entity> ents = new ArrayList<>();
 
     for (World w : Bukkit.getWorlds()) {
       ents.addAll(limitClear.getRemovables(w.getEntities(), w));
@@ -45,8 +45,6 @@ public class LimitTask extends TaskModule {
               .getString("limit.broadcast-message")
               .replace("+RemoveAmount", "" + ents.size()));
     }
-
-    ents.clear();
   }
 
   @Override

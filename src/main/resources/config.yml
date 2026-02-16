@@ -44,6 +44,8 @@ lag-spike-helper:
   min-elapsed-time: 500
   check-interval: 100
   follow-stack: true
+  ignore-stack-contains:
+    - net.freemcserver.assistant.Hibernate
 
 #Limits the amount of item transfers for all the hoppers in a single chunk
 # -- 'transfer-limit' How many transfers per check interval until the hopper should be disabled

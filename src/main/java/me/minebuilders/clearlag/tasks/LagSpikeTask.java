@@ -2,6 +2,7 @@ package me.minebuilders.clearlag.tasks;
 
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -12,6 +13,7 @@ import me.minebuilders.clearlag.annotations.AutoWire;
 import me.minebuilders.clearlag.annotations.ConfigPath;
 import me.minebuilders.clearlag.annotations.ConfigValue;
 import me.minebuilders.clearlag.config.ConfigHandler;
+import me.minebuilders.clearlag.config.ConfigValueType;
 import me.minebuilders.clearlag.modules.TaskModule;
 import org.bukkit.Bukkit;
 
@@ -21,6 +23,9 @@ public class LagSpikeTask extends TaskModule {
   @ConfigValue private boolean followStack;
 
   @ConfigValue private int minElapsedTime;
+
+  @ConfigValue(valueType = ConfigValueType.STRING_SET)
+  private Set<String> ignoreStackContains;
 
   @AutoWire private ConfigHandler configHandler;
 
@@ -60,9 +65,20 @@ public class LagSpikeTask extends TaskModule {
 
       if (elapsedTime >= minElapsedTime) {
 
-        frozen = true;
-
         final StackTraceElement[] stackTraceElements = mainThread.getStackTrace();
+
+        if (ignoreStackContains != null && !ignoreStackContains.isEmpty()) {
+          for (StackTraceElement element : stackTraceElements) {
+            String elementString = element.toString();
+            for (String ignore : ignoreStackContains) {
+              if (elementString.contains(ignore)) {
+                return;
+              }
+            }
+          }
+        }
+
+        frozen = true;
 
         if (currentTick != frozenTick) {
 
