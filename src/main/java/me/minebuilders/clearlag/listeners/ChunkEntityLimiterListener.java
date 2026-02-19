@@ -50,9 +50,14 @@ public class ChunkEntityLimiterListener extends EventModule {
 
         int count = 0;
 
-        for (Entity e : entities) if (this.entities.containsEntity(e)) ++count;
-
-        event.setCancelled(count >= limit);
+        for (Entity e : entities) {
+          if (this.entities.containsEntity(e)) {
+            if (++count >= limit) {
+              event.setCancelled(true);
+              return;
+            }
+          }
+        }
       }
     }
   }

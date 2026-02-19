@@ -1,7 +1,5 @@
 package me.minebuilders.clearlag;
 
-import java.util.ArrayList;
-import java.util.List;
 import me.minebuilders.clearlag.adapters.LatestVersionAdapter;
 import me.minebuilders.clearlag.adapters.VersionAdapter;
 import me.minebuilders.clearlag.annotations.AutoWire;
@@ -172,25 +170,14 @@ public class Clearlag extends JavaPlugin {
   }
 
   private VersionAdapter findVersionAdapter() {
+    try {
+      final VersionAdapter tryingVersionAdapter = new LatestVersionAdapter();
 
-    final List<Class<? extends VersionAdapter>> versionAdapterTypes = new ArrayList<>();
-
-    versionAdapterTypes.add(LatestVersionAdapter.class);
-
-    for (Class<? extends VersionAdapter> versionAdapterType : versionAdapterTypes) {
-
-      try {
-
-        final VersionAdapter tryingVersionAdapter =
-            versionAdapterType.getDeclaredConstructor().newInstance();
-
-        if (tryingVersionAdapter.isCompatible()) {
-          return tryingVersionAdapter;
-        }
-
-      } catch (Throwable t) {
-        Util.debug(t);
+      if (tryingVersionAdapter.isCompatible()) {
+        return tryingVersionAdapter;
       }
+    } catch (Throwable t) {
+      Util.debug(t);
     }
 
     return null;

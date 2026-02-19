@@ -72,14 +72,12 @@ public class Util {
 
   public static boolean isInteger(String s, int radix) {
     if (s.isEmpty()) return false;
-    for (int i = 0; i < s.length(); i++) {
-      if (i == 0 && s.charAt(i) == '-') {
-        if (s.length() == 1) return false;
-        else continue;
-      }
-      if (Character.digit(s.charAt(i), radix) < 0) return false;
+    try {
+      Integer.parseInt(s, radix);
+      return true;
+    } catch (NumberFormatException e) {
+      return false;
     }
-    return true;
   }
 
   public static String color(String s) {
@@ -98,18 +96,17 @@ public class Util {
   }
 
   public static EntityType getEntityTypeFromString(String s) {
-    @SuppressWarnings("deprecation")
-    EntityType et = EntityType.fromName(s);
-
-    if (et != null) {
-      return et;
+    try {
+      return EntityType.valueOf(s.toUpperCase().replace(" ", "_"));
+    } catch (IllegalArgumentException e) {
+      // Continue to fallback search
     }
 
-    s = s.replace("_", "").replace(" ", "");
+    String search = s.replace("_", "").replace(" ", "");
     for (EntityType e : EntityType.values()) {
       if (e != null) {
         String name = e.name().replace("_", "");
-        if (name.equalsIgnoreCase(s)) {
+        if (name.equalsIgnoreCase(search)) {
           return e;
         }
       }
